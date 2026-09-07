@@ -1,13 +1,32 @@
 package com.gtihub.Luythen.MP4_Backend;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import com.gtihub.Luythen.MP4_Backend.game.GameService;
 
 @SpringBootTest
 class Mp4BackendApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+	private GameService gameService = new GameService();
 
+	@Test
+	void checkIfPlayerExits () {
+		assertDoesNotThrow(() -> {
+			gameService.addPlayer("Andreas");
+		});
+
+		Exception exception = assertThrows(Exception.class, () -> {
+			gameService.addPlayer("Andreas");
+		});
+
+		String expectedMessage = "Player with that name already exits";
+		String acutalMessage = exception.getMessage();
+
+		assertTrue(acutalMessage.contains(expectedMessage));
+	}
 }
