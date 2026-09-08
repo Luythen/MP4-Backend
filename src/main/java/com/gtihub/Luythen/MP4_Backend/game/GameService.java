@@ -59,13 +59,13 @@ public class GameService {
         return players;
     }
 
-     public long gameLoop() {
+    public long gameLoop() {
         if (gameOn) {
             return gameTimer();
         }
 
         return 0;
-     }
+    }
     
     public void startTime() {
         gameOn = true;
@@ -83,6 +83,10 @@ public class GameService {
             return 0;
         }
         return timeLeft;
+    }
+
+    public boolean isGameOn () {
+        return gameOn;
     }
 
     public int addPoint(String name, int points){

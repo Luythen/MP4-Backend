@@ -69,6 +69,8 @@ public class GameSocket {
     @Scheduled(fixedRate = 100)
     public void timeLeft () {
         long timeLeft = gameService.gameLoop();
-        messagingTemplate.convertAndSend("/topic/send-timer", timeLeft);
+        if (gameService.isGameOn()) {
+            messagingTemplate.convertAndSend("/topic/send-timer", timeLeft);
+        }
     }
 }
