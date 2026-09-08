@@ -60,10 +60,11 @@ public class GameService {
     }
 
      public long gameLoop() {
-        if (!gameOn) {
-            startTime();
+        if (gameOn) {
+            return gameTimer();
         }
-        return gameTimer();
+
+        return 0;
      }
     
     public void startTime() {
