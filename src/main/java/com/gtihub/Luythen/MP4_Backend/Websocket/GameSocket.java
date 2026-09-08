@@ -1,11 +1,13 @@
 package com.gtihub.Luythen.MP4_Backend.Websocket;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,19 +18,21 @@ import com.gtihub.Luythen.MP4_Backend.game.GameService;
 public class GameSocket {
 
     private GameService gameService;
+    private SimpMessagingTemplate messagingTemplate;
 
-    public GameSocket (GameService gameService) {
+    public GameSocket (GameService gameService, SimpMessagingTemplate messagingTemplate) {
         this.gameService = gameService;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @MessageMapping("/setname")
     @SendTo("/topic/lobby")
     // public PlayerParty playerParty(Playername playername)
-    public ResponseEntity<?> setName (@Payload String name) {
+    public Map<?, ?> setName (@Payload String name) {
         try {
-            return ResponseEntity.ok(gameService.addPlayer(name));
+            return gameService.addPlayer(name);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return new HashMap();
         }
     }
 
@@ -63,13 +67,8 @@ public class GameSocket {
 
     // Countdown timer
     @Scheduled(fixedRate = 100)
-    @MessageMapping("/send-time-left")
-    @SendTo("/topic/send-timer")
-    public long timeLeft () {
-    long timeLeft = gameService.gameLoop();
-    if (timeLeft >= 0) {
-        return timeLeft;    
-    }
-        return 0;
+    public void timeLeft () {
+        long timeLeft = gameService.gameLoop();
+        messagingTemplate.convertAndSend("/topic/send-timer", timeLeft);
     }
 }
