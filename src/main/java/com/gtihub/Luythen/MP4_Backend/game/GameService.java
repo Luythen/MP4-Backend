@@ -27,6 +27,8 @@ public class GameService {
         PlayerInformation playerInformation = new PlayerInformation();
         playerInformation.setColor("White");
         playerInformation.setScore(0);
+        playerInformation.setPosX(50);
+        playerInformation.setPosY(50);
 
         players.put(name, playerInformation);
         sessiontoName.put(sessionId, name);
@@ -60,6 +62,10 @@ public class GameService {
                 break;
         }
 
+        return players;
+    }
+
+    public Map<String, PlayerInformation> getPlayers () {
         return players;
     }
 
