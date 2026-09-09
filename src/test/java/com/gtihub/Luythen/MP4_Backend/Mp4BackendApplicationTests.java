@@ -17,11 +17,11 @@ class Mp4BackendApplicationTests {
 	@Test
 	void checkIfPlayerExits () {
 		assertDoesNotThrow(() -> {
-			gameService.addPlayer("Andreas");
+			gameService.addPlayer("Andreas", "1234");
 		});
 
 		Exception exception = assertThrows(Exception.class, () -> {
-			gameService.addPlayer("Andreas");
+			gameService.addPlayer("Andreas", "54321");
 		});
 
 		String expectedMessage = "Player with that name already exits";

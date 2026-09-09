@@ -8,6 +8,7 @@ public class QuestionModel {
     private String question;
     private String category;
     private List<String> options;
+    private String correctAnswer;
 
     public String getId() {
         return id;
@@ -32,6 +33,12 @@ public class QuestionModel {
     }
     public void setOptions(List<String> options) {
         this.options = options;
+    }
+    public String getCorrectAnswer() {
+        return correctAnswer;
+    }
+    public void setCorrectAnswer(String correctAnswer) {
+        this.correctAnswer = correctAnswer;
     }
 
 }
