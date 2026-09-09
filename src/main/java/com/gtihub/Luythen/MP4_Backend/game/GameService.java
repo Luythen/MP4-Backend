@@ -11,14 +11,14 @@ import com.gtihub.Luythen.MP4_Backend.Player.PlayerInformation;
 
 @Service
 public class GameService {
-
+    private Map<String, String> sessiontoName = new HashMap();
     private Map<String, PlayerInformation> players = new HashMap();
     private Instant timer;
     private boolean gameOn;
     private final float speed = 15;
     private final int seconds = 15;
 
-    public Map<String, PlayerInformation> addPlayer(String name) throws Exception {
+    public Map<String, PlayerInformation> addPlayer(String name, String sessionId) throws Exception {
         if (players.containsKey(name)) {
             throw new Exception("Player with that name already exits");
             // return new ResponseStatusException(HttpStatus.CONFLICT)
@@ -29,10 +29,14 @@ public class GameService {
         playerInformation.setScore(0);
 
         players.put(name, playerInformation);
+        sessiontoName.put(sessionId, name);
 
         return players;
     }
 
+    public String getNameBySessionId(String sessionId) {
+        return sessiontoName.get(sessionId);
+    }
     public Map<String, PlayerInformation> movePlayer(String keyPressed, String name) {
         PlayerInformation playerInformation = players.get(name);
 

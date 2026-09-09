@@ -7,11 +7,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gtihub.Luythen.MP4_Backend.Player.PlayerInformation;
+import com.gtihub.Luythen.MP4_Backend.Question.QuestionModel;
+import com.gtihub.Luythen.MP4_Backend.Question.QuestionService;
 import com.gtihub.Luythen.MP4_Backend.game.GameService;
 
 @RestController
@@ -19,18 +22,21 @@ public class GameSocket {
 
     private GameService gameService;
     private SimpMessagingTemplate messagingTemplate;
+    private QuestionService questionService;
 
-    public GameSocket (GameService gameService, SimpMessagingTemplate messagingTemplate) {
+    public GameSocket (GameService gameService, SimpMessagingTemplate messagingTemplate, QuestionService questionService) {
         this.gameService = gameService;
         this.messagingTemplate = messagingTemplate;
+        this.questionService = questionService;
     }
 
     @MessageMapping("/setname")
     @SendTo("/topic/lobby")
     // public PlayerParty playerParty(Playername playername)
-    public Map<?, ?> setName (@Payload String name) {
+    public Map<?, ?> setName (@Payload String name, SimpMessageHeaderAccessor headerAccessor) {
         try {
-            return gameService.addPlayer(name);
+            String sessionId = headerAccessor.getSessionId();
+            return gameService.addPlayer(name, sessionId);
         } catch (Exception e) {
             return new HashMap();
         }
@@ -57,15 +63,24 @@ public class GameSocket {
 
     // Get question
     @MessageMapping("/get-random-question")
-    @SendTo("/topic/random-quesiton")
-    public String getRandomQuestion () {
-        return "Question";
+    @SendTo("/topic/random-question")
+    public QuestionModel getRandomQuestion () {
+        return questionService.getRandomQuestion();
     }
 
     // Player answer
     @MessageMapping("/send-player-answer")
     @SendTo("/topic/player-answers")
-    public void getPlayerAnswer (@Payload String answer) {
+    public void getPlayerAnswer (@Payload String answer, SimpMessageHeaderAccessor headerAccessor) {
+
+        String sessionId = headerAccessor.getSessionId();
+        String playerName = gameService.getNameBySessionId(sessionId);
+
+        if (playerName != null) {
+            int points = questionService.calculatePoints(answer);
+            int newScore = gameService.addPoint(playerName, points);
+            messagingTemplate.convertAndSend("/topic/score-update", newScore);
+        }
         
     }
 
