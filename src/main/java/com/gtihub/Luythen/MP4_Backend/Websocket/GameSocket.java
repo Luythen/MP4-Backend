@@ -46,8 +46,10 @@ public class GameSocket {
     @MessageMapping("/move")
     @SendTo("/topic/move")
     // public PlayerModel movePlayer (@Payload String keypressed)
-    public Map<String, PlayerInformation> movePlayer (@Payload String keypressed, @Payload String namn) {
-        return gameService.movePlayer(keypressed, namn);
+    public Map<String, PlayerInformation> movePlayer (@Payload String keypressed, SimpMessageHeaderAccessor headerAccessor) {
+        String sessionId = headerAccessor.getSessionId();
+        String name = gameService.getNameBySessionId(sessionId);
+        return gameService.movePlayer(keypressed, name);
     }
 
     // Start game
@@ -58,6 +60,7 @@ public class GameSocket {
     public void startGame () {
         if (!gameService.isGameOn()) {
             gameService.startTime();
+            messagingTemplate.convertAndSend("/topic/move", gameService.getPlayers());
         } 
     }
 
