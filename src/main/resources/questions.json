@@ -47,7 +47,7 @@
     "category": "Science",
     "options": ["Mercury", "Venus", "Earth", "Mars"],
     "correctAnswer": "Mercury"
-  }
+  },
   {
     "id": 8,
     "question": "What is the chemical symbol for gold?",
@@ -110,7 +110,7 @@
     "category": "Science",
     "options": ["7", "0", "14", "1"],
     "correctAnswer": "7"
-  }
+  },
   {
     "id": 17,
     "question": "In a four-stroke engine, what are the four strokes in order?",
