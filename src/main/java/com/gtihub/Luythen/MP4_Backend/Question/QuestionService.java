@@ -1,69 +1,63 @@
 package com.gtihub.Luythen.MP4_Backend.Question;
 
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Query;
+
 import java.util.List;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Random;
 
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Service 
 public class QuestionService {
     private final Random random = new Random();
-    private final List<QuestionModel> questions = new ArrayList<>();
-    
+    private final MongoOperations mongoOperations;
+    private final long questionCount;
     private QuestionModel currentQuestion;
-
     private boolean fastestAnswered;
 
-    public QuestionService() {
+    public QuestionService(MongoOperations mongoOperations) throws IOException {
+        this.mongoOperations = mongoOperations;
+        // To ease during development, this will reload the questions.json into the database on startup
+        addQuestions();
+        this.questionCount = questionCount();
+    }
 
-        addQuestion("1", "Wich city is located on two continents?", "Geography",
-            List.of("Philippines", "Indonesia", "Russia", "Turkey"),
-             "Turkey");
+    // dropcollection removes all the previous questions from the database
+    // Inputstream loads the questions.json and objectmapper maps it to the QuestionModel
+    private void addQuestions() throws IOException {
+        mongoOperations.dropCollection(QuestionModel.class);
+        ObjectMapper objectMapper = new ObjectMapper();
 
-        addQuestion("2", "Which city is the smallest in the world?", "Geography",
-            List.of("Monaco", "San Marino", "Vatican City", "Liechtenstein"),
-             "Vatican City");
-             
+        try {
+            InputStream questions = new ClassPathResource("questions.json")
+            .getInputStream();
+            
+            List<QuestionModel> mongoQuestions = objectMapper
+            .readValue(questions, objectMapper.getTypeFactory()
+            .constructCollectionType(List.class, QuestionModel.class));
 
-        addQuestion("3", "How many bones does an adult human body usually have?", "General Knowledge",
-            List.of("206", "208", "210", "212"),
-             "206");
+            mongoOperations.insert(mongoQuestions, QuestionModel.class);
+            System.out.println("QUESTIONS INSERTED: \n" + mongoQuestions.size());
 
-        addQuestion("4","What is the hardest natural substance on earth?", "General Knowledge",
-            List.of("Iron", "Quartz", "Diamond", "Titanium"),
-             "Diamond");
-             
-        addQuestion("5","What year was Google founded?", "Technology",
-            List.of("1996", "1997", "1998", "1999"),
-             "1998");
-
-
-        addQuestion("6","Which companty owns GitHub?", "Technology",
-            List.of("Google", "Apple", "Microsoft", "Amazon"),
-             "Microsoft");     
-
-
+        } catch (Exception e) {
+            System.out.println("Error: \n" + e);
+        }
 
     }
 
-    private void addQuestion(String id, String question, String category, List<String>options, String correctAnswer) {
-
-        QuestionModel q = new QuestionModel();
-
-        q.setId(id);
-        q.setQuestion(question);
-        q.setCategory(category);
-        q.setOptions(options);
-        q.setCorrectAnswer(correctAnswer);
-
-        questions.add(q);
+    private long questionCount() {
+        return mongoOperations.count(new Query(), QuestionModel.class);
     }
 
     public QuestionModel getRandomQuestion() {
-        int index = random.nextInt(questions.size());
-
-        currentQuestion = questions.get(index);
+        long randomQuestion = random.nextLong(questionCount) + 1;
+        currentQuestion = mongoOperations.findById(randomQuestion, QuestionModel.class);
 
           // Ny fråga = ingen har svarat snabbast ännu
         fastestAnswered = false;
