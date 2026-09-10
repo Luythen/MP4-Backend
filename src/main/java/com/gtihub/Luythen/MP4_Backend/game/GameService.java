@@ -8,15 +8,23 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.gtihub.Luythen.MP4_Backend.Player.PlayerInformation;
+import com.gtihub.Luythen.MP4_Backend.Question.QuestionModel;
+import com.gtihub.Luythen.MP4_Backend.Question.QuestionService;
 
 @Service
 public class GameService {
     private Map<String, String> sessiontoName = new HashMap();
     private Map<String, PlayerInformation> players = new HashMap();
+    private QuestionModel currentQuestion;
     private Instant timer;
     private boolean gameOn;
     private final float speed = 15;
     private final int seconds = 15;
+    private final QuestionService questionService;
+
+    public GameService(QuestionService questionService) {
+        this.questionService = questionService;
+    }
 
     public Map<String, PlayerInformation> addPlayer(String name, String sessionId) throws Exception {
         if (players.containsKey(name)) {
@@ -84,6 +92,11 @@ public class GameService {
 
     public void gameStop() {
         gameOn = false;
+        currentQuestion = questionService.getRandomQuestion();
+    }
+
+    public QuestionModel currentQuestion() {
+        return currentQuestion;
     }
 
     public long gameTimer() {
