@@ -8,15 +8,24 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.gtihub.Luythen.MP4_Backend.Player.PlayerInformation;
+import com.gtihub.Luythen.MP4_Backend.Question.QuestionModel;
+import com.gtihub.Luythen.MP4_Backend.Question.QuestionService;
 
 @Service
 public class GameService {
     private Map<String, String> sessiontoName = new HashMap();
     private Map<String, PlayerInformation> players = new HashMap();
+    private QuestionModel currentQuestion;
     private Instant timer;
     private boolean gameOn;
     private final float speed = 15;
     private final int seconds = 15;
+    private final QuestionService questionService;
+
+    public GameService(QuestionService questionService, QuestionModel questionModel) {
+        this.currentQuestion = questionService.getRandomQuestion();
+        this.questionService = questionService;
+    }
 
     public Map<String, PlayerInformation> addPlayer(String name, String sessionId) throws Exception {
         if (players.containsKey(name)) {
@@ -39,6 +48,7 @@ public class GameService {
     public String getNameBySessionId(String sessionId) {
         return sessiontoName.get(sessionId);
     }
+
     public Map<String, PlayerInformation> movePlayer(String keyPressed, String name) {
         PlayerInformation playerInformation = players.get(name);
 
@@ -65,8 +75,12 @@ public class GameService {
         return players;
     }
 
-    public Map<String, PlayerInformation> getPlayers () {
+    public Map<String, PlayerInformation> getPlayers() {
         return players;
+    }
+
+    public QuestionModel getCurrentQuestion() {
+        return currentQuestion;
     }
 
     public long gameLoop() {
@@ -76,7 +90,7 @@ public class GameService {
 
         return 0;
     }
-    
+
     public void startTime() {
         gameOn = true;
         timer = Instant.now().plusSeconds(10);
@@ -84,6 +98,7 @@ public class GameService {
 
     public void gameStop() {
         gameOn = false;
+        currentQuestion = questionService.getRandomQuestion();
     }
 
     public long gameTimer() {
@@ -95,11 +110,11 @@ public class GameService {
         return timeLeft;
     }
 
-    public boolean isGameOn () {
+    public boolean isGameOn() {
         return gameOn;
     }
 
-    public int addPoint(String name, int points){
+    public int addPoint(String name, int points) {
         PlayerInformation playerInformation = players.get(name);
         int newScore = playerInformation.getScore() + points;
         playerInformation.setScore(newScore);

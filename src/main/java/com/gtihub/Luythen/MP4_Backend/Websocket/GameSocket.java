@@ -3,7 +3,6 @@ package com.gtihub.Luythen.MP4_Backend.Websocket;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -64,11 +63,11 @@ public class GameSocket {
         } 
     }
 
-    // Get question
-    @MessageMapping("/get-random-question")
-    @SendTo("/topic/random-question")
-    public QuestionModel getRandomQuestion () {
-        return questionService.getRandomQuestion();
+    // Get the current question
+    @MessageMapping("/get-current-question")
+    @SendTo("/topic/current-question")
+    public QuestionModel getCurrentQuestion () {
+        return gameService.currentQuestion();
     }
 
     // Player answer
