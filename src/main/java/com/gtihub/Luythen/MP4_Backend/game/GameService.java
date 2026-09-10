@@ -22,7 +22,8 @@ public class GameService {
     private final int seconds = 15;
     private final QuestionService questionService;
 
-    public GameService(QuestionService questionService) {
+    public GameService(QuestionService questionService, QuestionModel questionModel) {
+        this.currentQuestion = questionService.getRandomQuestion();
         this.questionService = questionService;
     }
 
@@ -47,6 +48,7 @@ public class GameService {
     public String getNameBySessionId(String sessionId) {
         return sessiontoName.get(sessionId);
     }
+
     public Map<String, PlayerInformation> movePlayer(String keyPressed, String name) {
         PlayerInformation playerInformation = players.get(name);
 
@@ -73,8 +75,12 @@ public class GameService {
         return players;
     }
 
-    public Map<String, PlayerInformation> getPlayers () {
+    public Map<String, PlayerInformation> getPlayers() {
         return players;
+    }
+
+    public QuestionModel getCurrentQuestion() {
+        return currentQuestion;
     }
 
     public long gameLoop() {
@@ -84,7 +90,7 @@ public class GameService {
 
         return 0;
     }
-    
+
     public void startTime() {
         gameOn = true;
         timer = Instant.now().plusSeconds(10);
@@ -93,10 +99,6 @@ public class GameService {
     public void gameStop() {
         gameOn = false;
         currentQuestion = questionService.getRandomQuestion();
-    }
-
-    public QuestionModel currentQuestion() {
-        return currentQuestion;
     }
 
     public long gameTimer() {
@@ -108,11 +110,11 @@ public class GameService {
         return timeLeft;
     }
 
-    public boolean isGameOn () {
+    public boolean isGameOn() {
         return gameOn;
     }
 
-    public int addPoint(String name, int points){
+    public int addPoint(String name, int points) {
         PlayerInformation playerInformation = players.get(name);
         int newScore = playerInformation.getScore() + points;
         playerInformation.setScore(newScore);
