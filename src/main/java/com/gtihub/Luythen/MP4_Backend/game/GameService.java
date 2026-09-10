@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.gtihub.Luythen.MP4_Backend.Player.PlayerInformation;
@@ -13,74 +14,42 @@ import com.gtihub.Luythen.MP4_Backend.Question.QuestionService;
 
 @Service
 public class GameService {
-    private Map<String, String> sessiontoName = new HashMap();
-    private Map<String, PlayerInformation> players = new HashMap();
-    private QuestionModel currentQuestion;
+
+    
     private Instant timer;
     private boolean gameOn;
-    private final float speed = 15;
     private final int seconds = 15;
     private final QuestionService questionService;
 
-    public GameService(QuestionService questionService, QuestionModel questionModel) {
-        this.currentQuestion = questionService.getRandomQuestion();
+    private final GameHandler gameHandler = new GameHandler();
+
+    public GameService(QuestionService questionService) {
+        gameHandler.setCurrentQuestion(questionService.getRandomQuestion());
         this.questionService = questionService;
     }
 
-    public Map<String, PlayerInformation> addPlayer(String name, String sessionId) throws Exception {
-        if (players.containsKey(name)) {
-            throw new Exception("Player with that name already exits");
-            // return new ResponseStatusException(HttpStatus.CONFLICT)
+    public Map<?, ?> addPlayer(String name, String sessionId){
+        try {
+            return gameHandler.addPlayer(name, sessionId);
+        } catch (Exception e) {
+            return new HashMap();
         }
-
-        PlayerInformation playerInformation = new PlayerInformation();
-        playerInformation.setColor("White");
-        playerInformation.setScore(0);
-        playerInformation.setPosX(50);
-        playerInformation.setPosY(50);
-
-        players.put(name, playerInformation);
-        sessiontoName.put(sessionId, name);
-
-        return players;
     }
 
-    public String getNameBySessionId(String sessionId) {
-        return sessiontoName.get(sessionId);
-    }
-
-    public Map<String, PlayerInformation> movePlayer(String keyPressed, String name) {
-        PlayerInformation playerInformation = players.get(name);
-
-        float posX = playerInformation.getPosX();
-        float posY = playerInformation.getPosY();
-
-        switch (keyPressed) {
-            case "ArrowUp":
-                playerInformation.setPosY(posY -= speed);
-                break;
-            case "ArrowDown":
-                playerInformation.setPosY(posY += speed);
-                break;
-            case "ArrowRight":
-                playerInformation.setPosX(posX += speed);
-                break;
-            case "ArrowLeft":
-                playerInformation.setPosX(posX -= speed);
-                break;
-            default:
-                break;
-        }
-
-        return players;
+    public Map<String, PlayerInformation> movePlayer (String keyPressed, String name) {
+        return gameHandler.movePlayer(keyPressed, name);
     }
 
     public Map<String, PlayerInformation> getPlayers() {
-        return players;
+        return gameHandler.getPlayers();
+    }
+
+    public String getPlayerBySessionId(String name) {
+        return gameHandler.getNameBySessionId(name);
     }
 
     public QuestionModel getCurrentQuestion() {
-        return currentQuestion;
+        return gameHandler.getCurrentQuestion();
     }
 
     public long gameLoop() {
@@ -98,7 +67,7 @@ public class GameService {
 
     public void gameStop() {
         gameOn = false;
-        currentQuestion = questionService.getRandomQuestion();
+        gameHandler.setCurrentQuestion(questionService.getRandomQuestion());
     }
 
     public long gameTimer() {
@@ -115,7 +84,7 @@ public class GameService {
     }
 
     public int addPoint(String name, int points) {
-        PlayerInformation playerInformation = players.get(name);
+        PlayerInformation playerInformation = gameHandler.getPlayers().get(name);
         int newScore = playerInformation.getScore() + points;
         playerInformation.setScore(newScore);
         return newScore;

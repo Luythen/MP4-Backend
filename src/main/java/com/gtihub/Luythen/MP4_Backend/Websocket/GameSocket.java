@@ -47,7 +47,7 @@ public class GameSocket {
     // public PlayerModel movePlayer (@Payload String keypressed)
     public Map<String, PlayerInformation> movePlayer (@Payload String keypressed, SimpMessageHeaderAccessor headerAccessor) {
         String sessionId = headerAccessor.getSessionId();
-        String name = gameService.getNameBySessionId(sessionId);
+        String name = gameService.getPlayerBySessionId(sessionId);
         return gameService.movePlayer(keypressed, name);
     }
 
@@ -67,7 +67,7 @@ public class GameSocket {
     @MessageMapping("/get-current-question")
     @SendTo("/topic/current-question")
     public QuestionModel getCurrentQuestion () {
-        return gameService.currentQuestion();
+        return gameService.getCurrentQuestion();
     }
 
     // Player answer
@@ -76,7 +76,7 @@ public class GameSocket {
     public void getPlayerAnswer (@Payload String answer, SimpMessageHeaderAccessor headerAccessor) {
 
         String sessionId = headerAccessor.getSessionId();
-        String playerName = gameService.getNameBySessionId(sessionId);
+        String playerName = gameService.getPlayerBySessionId(sessionId);
 
         if (playerName != null) {
             int points = questionService.calculatePoints(answer);
