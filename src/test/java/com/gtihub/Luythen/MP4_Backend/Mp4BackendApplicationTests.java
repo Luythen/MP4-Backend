@@ -7,12 +7,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.gtihub.Luythen.MP4_Backend.game.GameHandler;
 import com.gtihub.Luythen.MP4_Backend.game.GameService;
 
 @SpringBootTest
 class Mp4BackendApplicationTests {
 
-	private GameService gameService = new GameService();
+	private GameHandler gameService = new GameHandler();
 
 	@Test
 	void checkIfPlayerExits () {
