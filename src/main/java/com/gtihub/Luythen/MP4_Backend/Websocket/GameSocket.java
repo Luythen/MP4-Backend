@@ -1,5 +1,6 @@
 package com.gtihub.Luythen.MP4_Backend.Websocket;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gtihub.Luythen.MP4_Backend.Player.PlayerAnswer;
 import com.gtihub.Luythen.MP4_Backend.Player.PlayerInformation;
 import com.gtihub.Luythen.MP4_Backend.Question.QuestionModel;
 import com.gtihub.Luythen.MP4_Backend.Question.QuestionService;
@@ -72,16 +74,13 @@ public class GameSocket {
 
     // Player answer
     @MessageMapping("/send-player-answer")
-    @SendTo("/topic/player-answers")
     public void getPlayerAnswer (@Payload String answer, SimpMessageHeaderAccessor headerAccessor) {
 
         String sessionId = headerAccessor.getSessionId();
         String playerName = gameService.getPlayerBySessionId(sessionId);
 
         if (playerName != null) {
-            int points = questionService.calculatePoints(answer);
-            int newScore = gameService.addPoint(playerName, points);
-            messagingTemplate.convertAndSend("/topic/score-update", newScore);
+            questionService.addPlayerAnswer(new PlayerAnswer(playerName, answer, Instant.now()));
         }
     }
 

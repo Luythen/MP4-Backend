@@ -78,6 +78,11 @@ public class GameService {
 
     public void gameStop() {
         gameOn = false;
+        try {
+            questionService.calculateAllPlayerPoints(getPlayers());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         if (gameSessionRemaining > 0) {
             gameSessionRemaining -= 1;
         } else {
