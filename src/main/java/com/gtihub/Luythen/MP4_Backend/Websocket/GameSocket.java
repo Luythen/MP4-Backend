@@ -57,7 +57,7 @@ public class GameSocket {
     // Kan skapa en räknare som räknar hur många "startgame" kommit in för att starta timern när alla klienter är "redo"
     // Spelare borde inte kunna starta själva, men startgame kan skickas automatiskt från alla klienter när nästa fråga är uppdaterad
     public void startGame () {
-        if (!gameService.isGameOn()) {
+        if (!gameService.isGameOn() && gameService.getPlayers().size() > 0) {
             gameService.startTime();
             messagingTemplate.convertAndSend("/topic/move", gameService.getPlayers());
         } 
@@ -83,10 +83,9 @@ public class GameSocket {
             int newScore = gameService.addPoint(playerName, points);
             messagingTemplate.convertAndSend("/topic/score-update", newScore);
         }
-        
     }
 
-    @Scheduled(fixedRate = 2000)
+    @Scheduled(fixedRate = 6000)
     public void gameOn() {
         messagingTemplate.convertAndSend("/topic/startgame", gameService.isGameOn());
     }

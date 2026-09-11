@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.gtihub.Luythen.MP4_Backend.Player.PlayerInformation;
@@ -15,17 +18,24 @@ import com.gtihub.Luythen.MP4_Backend.Question.QuestionService;
 @Service
 public class GameService {
 
-    
+    private Environment environment;    
     private Instant timer;
+    @Value("${game.rounds}")
+    private int gameSessionRemaining;
+    
     private boolean gameOn;
     private final int seconds = 15;
     private final QuestionService questionService;
 
     private final GameHandler gameHandler = new GameHandler();
 
-    public GameService(QuestionService questionService) {
+    private SimpMessagingTemplate messageingTemplate;
+
+    public GameService(QuestionService questionService, SimpMessagingTemplate messagingTemplate, Environment environment) {
         gameHandler.setCurrentQuestion(questionService.getRandomQuestion());
         this.questionService = questionService;
+        this.messageingTemplate = messagingTemplate;
+        this.environment = environment;
     }
 
     public Map<?, ?> addPlayer(String name, String sessionId){
@@ -54,6 +64,7 @@ public class GameService {
 
     public long gameLoop() {
         if (gameOn) {
+            
             return gameTimer();
         }
 
@@ -67,6 +78,13 @@ public class GameService {
 
     public void gameStop() {
         gameOn = false;
+        if (gameSessionRemaining > 0) {
+            gameSessionRemaining -= 1;
+        } else {
+            gameSessionRemaining = Integer.parseInt(environment.getProperty("game.rounds"));
+            gameHandler.gameComplete();
+            messageingTemplate.convertAndSend("/topic/lobby", gameHandler.getPlayers());
+        }
         gameHandler.setCurrentQuestion(questionService.getRandomQuestion());
     }
 
