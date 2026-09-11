@@ -47,5 +47,103 @@
     "category": "Science",
     "options": ["Mercury", "Venus", "Earth", "Mars"],
     "correctAnswer": "Mercury"
+  },
+  {
+    "id": 8,
+    "question": "What is the chemical symbol for gold?",
+    "category": "Science",
+    "options": ["Au", "Ag", "Gd", "Go"],
+    "correctAnswer": "Au"
+  },
+  {
+    "id": 9,
+    "question": "What gas do plants primarily absorb from the atmosphere for photosynthesis?",
+    "category": "Science",
+    "options": ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"],
+    "correctAnswer": "Carbon dioxide"
+  },
+  {
+    "id": 10,
+    "question": "What is the powerhouse of the cell?",
+    "category": "Science",
+    "options": ["Nucleus", "Ribosome", "Mitochondria", "Golgi apparatus"],
+    "correctAnswer": "Mitochondria"
+  },
+  {
+    "id": 11,
+    "question": "What is the speed of light in a vacuum (approximately)?",
+    "category": "Science",
+    "options": ["300,000 km/s", "150,000 km/s", "3,000 km/s", "30,000 km/s"],
+    "correctAnswer": "300,000 km/s"
+  },
+  {
+    "id": 12,
+    "question": "Which subatomic particle has a negative charge?",
+    "category": "Science",
+    "options": ["Electron", "Proton", "Neutron", "Positron"],
+    "correctAnswer": "Electron"
+  },
+  {
+    "id": 13,
+    "question": "What type of bond involves the sharing of electron pairs between atoms?",
+    "category": "Science",
+    "options": ["Covalent bond", "Ionic bond", "Metallic bond", "Hydrogen bond"],
+    "correctAnswer": "Covalent bond"
+  },
+  {
+    "id": 14,
+    "question": "Which law states that force equals mass times acceleration?",
+    "category": "Science",
+    "options": ["Newton's second law", "Newton's first law", "Newton's third law", "Law of gravity"],
+    "correctAnswer": "Newton's second law"
+  },
+  {
+    "id": 15,
+    "question": "What is the most abundant gas in Earth's atmosphere?",
+    "category": "Science",
+    "options": ["Nitrogen", "Oxygen", "Carbon dioxide", "Argon"],
+    "correctAnswer": "Nitrogen"
+  },
+  {
+    "id": 16,
+    "question": "What is the pH value of a neutral solution?",
+    "category": "Science",
+    "options": ["7", "0", "14", "1"],
+    "correctAnswer": "7"
+  },
+  {
+    "id": 17,
+    "question": "In a four-stroke engine, what are the four strokes in order?",
+    "category": "Science",
+    "options": ["Intake, compression, power, exhaust", "Intake, power, compression, exhaust", "Compression, intake, exhaust, power", "Intake, exhaust, compression, power"],
+    "correctAnswer": "Intake, compression, power, exhaust"
+  },
+  {
+    "id": 18,
+    "question": "What ignites the air-fuel mixture in a diesel engine?",
+    "category": "Science",
+    "options": ["Compression heat", "Spark plug", "Glow plug during running", "Catalytic reaction"],
+    "correctAnswer": "Compression heat"
+  },
+  {
+    "id": 19,
+    "question": "What is 'knocking' in a petrol engine caused by?",
+    "category": "Science",
+    "options": ["Premature/uncontrolled fuel ignition", "Low oil pressure", "Worn timing belt", "Overcharged battery"],
+    "correctAnswer": "Premature/uncontrolled fuel ignition"
+  },
+  {
+    "id": 20,
+    "question": "What component converts reciprocating piston motion into rotational motion?",
+    "category": "Science",
+    "options": ["Crankshaft", "Camshaft", "Flywheel", "Timing chain"],
+    "correctAnswer": "Crankshaft"
+  },
+  {
+    "id": 21,
+    "question": "What does a turbocharger use to compress incoming air?",
+    "category": "Science",
+    "options": ["Exhaust gas energy", "Engine oil pressure", "Battery power", "Coolant flow"],
+    "correctAnswer": "Exhaust gas energy"
   }
 ]
