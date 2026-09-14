@@ -29,7 +29,6 @@ public class QuestionService {
     private boolean fastestAnswered;
 
     private List<PlayerAnswer> answers = new ArrayList<>();
-    private final Object answersLock = new Object();
 
     public QuestionService(MongoOperations mongoOperations) throws IOException {
         this.mongoOperations = mongoOperations;
@@ -75,38 +74,27 @@ public class QuestionService {
     }
 
     public void addPlayerAnswer (PlayerAnswer playerAnswer) {
-        synchronized (answersLock) {
-            answers.removeIf(ap -> ap.getName().equals(playerAnswer.getName()));
-            answers.add(playerAnswer);
+        synchronized (this) {
+            if (answers.stream().filter(a -> a.getAnswer().equals(playerAnswer.getAnswer())).toList().size() == 0) {
+                answers.removeIf(ap -> ap.getName().equals(playerAnswer.getName()));
+                answers.add(playerAnswer);
+            }
         }
     }
 
     public void calculateAllPlayerPoints (Map<String, PlayerInformation> players) throws Exception {
         List<PlayerAnswer> correctPlayerAnswers = answers.stream().filter(a -> currentQuestion.getCorrectAnswer().equals(a.getAnswer())).collect(Collectors.toList());
 
-        if (correctPlayerAnswers.size() > 0) {
-            PlayerAnswer fastest = correctPlayerAnswers.stream().min(Comparator.comparing(PlayerAnswer::getTime)).orElseThrow();
-            for (PlayerAnswer answer : correctPlayerAnswers) {
-                if (fastest.getName().equals(answer.getName())) {
-                    PlayerInformation playerInformation = players.get(fastest.getName());
-                    playerInformation.setScore(playerInformation.getScore() + 2);
-                } else {
-                    PlayerInformation playerInformation = players.get(answer.getName());
-                    playerInformation.setScore(playerInformation.getScore() + 1);
-                }
-            }
-        }
-
         for (PlayerAnswer playerAnswer : answers) {
-            if (!correctPlayerAnswers.contains(playerAnswer)) {
-                PlayerInformation playerInformation = players.get(playerAnswer.getName());
-                int score = playerInformation.getScore();
+            PlayerInformation playerInformation = players.get(playerAnswer.getName());
+            int score = playerInformation.getScore();
 
-                if (!playerAnswer.getAnswer().equals("blank")) {
-                    playerInformation.setScore(score - 1);
-                } else {
-                    playerInformation.setScore(score - 2);
-                }
+            if (!correctPlayerAnswers.isEmpty() && correctPlayerAnswers.contains(playerAnswer)) {
+                PlayerAnswer fastestAnswer = correctPlayerAnswers.stream().min(Comparator.comparing(PlayerAnswer::getTime)).orElseThrow();
+                
+                playerInformation.setScore(score + (fastestAnswer.getName().equals(playerAnswer.getName()) ? 2 : 1));
+            } else {
+                playerInformation.setScore(score - (!playerAnswer.getAnswer().equals("blank") ? 1 : 2));
             }
         }
         
