@@ -98,6 +98,7 @@ public class QuestionService {
             }
         }
         
+        answers.clear();
     }
 
     /**
