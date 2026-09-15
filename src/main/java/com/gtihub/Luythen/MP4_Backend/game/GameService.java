@@ -86,7 +86,12 @@ public class GameService {
         if (gameSessionRemaining > 0) {
             gameSessionRemaining -= 1;
         } else {
-            gameSessionRemaining = Integer.parseInt(environment.getProperty("game.rounds"));
+            String rounds = environment.getProperty("game.rounds");
+            if (rounds == null) {
+                gameSessionRemaining = 5;
+            } else {
+                gameSessionRemaining = Integer.parseInt(rounds);
+            }
             gameHandler.gameComplete();
             messageingTemplate.convertAndSend("/topic/lobby", gameHandler.getPlayers());
         }
