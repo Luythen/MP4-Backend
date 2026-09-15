@@ -6,7 +6,7 @@ This is the backend part of the game. It manages player positions, questions, an
 
 This is a quiz game, where players are presented with a question and 4 options for an answer. There is only 1 correct answer. 
 Players must first enter their name/alias. When 3 players have done so, the game will start. 
-After the game starts, players must move their icon to the correct answer. Score will be distributed as follows:
+After the game starts, players must move their icon to the correct answer using the keyboard arrows. Score will be distributed as follows:
 - The player who answer correctly first will receive 2 points.
 - Players who answer correctly but not first will receive 1 point.
 - Players who answer incorrectly will lose 1 point.
@@ -16,9 +16,10 @@ This project was made for a school assignment. It's purpose is to practice imple
 
 ## How to run
 
-To run the project, create a .env file in the root. There is a .env.example file to show the variables you need to set.
+-  To run the project, create a .env file in the root. There is a .env.example file to show the variables you need to set.
 Run the Mp4BackendApplication.java from your IDE. The API will be exposed at port 8080.
-This application can also be run with Docker. Install Docker. run "docker build -t <image-name> ." from the root of the project.
+
+-  This application can also be run with Docker. Install Docker. run "docker build -t <image-name> ." from the root of the project.
 You can now run the application in docker under "images". Don't forget to set the enviroment variables, you can find what is necessary in the .env.example file.
 
 ## Features
@@ -46,7 +47,6 @@ You can now run the application in docker under "images". Don't forget to set th
 * Websocket
 * Jackson databind
 * Digital Ocean
-
 
 
 ## Known bugs
