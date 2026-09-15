@@ -32,25 +32,25 @@ public class GameSocket {
     }
 
     @MessageMapping("/setname")
-    @SendTo("/topic/lobby")
     // public PlayerParty playerParty(Playername playername)
-    public Map<?, ?> setName (@Payload String name, SimpMessageHeaderAccessor headerAccessor) {
+    public void setName (@Payload String name, SimpMessageHeaderAccessor headerAccessor) {
+        String sessionId = headerAccessor.getSessionId();
         try {
-            String sessionId = headerAccessor.getSessionId();
-            return gameService.addPlayer(name, sessionId);
+            messagingTemplate.convertAndSend("/topic/lobby", gameService.addPlayer(name, sessionId));
         } catch (Exception e) {
-            return new HashMap();
+            messagingTemplate.convertAndSend("/topic/error."+ sessionId,e.getMessage());
         }
     }
 
     // Move player
     @MessageMapping("/move")
-    @SendTo("/topic/move")
     // public PlayerModel movePlayer (@Payload String keypressed)
-    public Map<String, PlayerInformation> movePlayer (@Payload String keypressed, SimpMessageHeaderAccessor headerAccessor) {
-        String sessionId = headerAccessor.getSessionId();
-        String name = gameService.getPlayerBySessionId(sessionId);
-        return gameService.movePlayer(keypressed, name);
+    public void movePlayer (@Payload String keypressed, SimpMessageHeaderAccessor headerAccessor) {
+        if (gameService.getPlayers().size() > 0) {
+            String sessionId = headerAccessor.getSessionId();
+            String name = gameService.getPlayerBySessionId(sessionId);
+            messagingTemplate.convertAndSend("/topic/move", gameService.movePlayer(keypressed, name));
+        }
     }
 
     // Start game
@@ -59,7 +59,7 @@ public class GameSocket {
     // Kan skapa en räknare som räknar hur många "startgame" kommit in för att starta timern när alla klienter är "redo"
     // Spelare borde inte kunna starta själva, men startgame kan skickas automatiskt från alla klienter när nästa fråga är uppdaterad
     public void startGame () {
-        if (!gameService.isGameOn() && !gameService.isGameFinished() && gameService.getPlayers().size() > 0) {
+        if (!gameService.isGameOn() && gameService.getPlayers().size() > 0) {
             gameService.startTime();
             for (PlayerInformation playerInformation : gameService.getPlayers().values()) {
                 playerInformation.setPosX(500);
