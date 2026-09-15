@@ -19,7 +19,12 @@ This project was made for a school assignment. It's purpose is to practice imple
 -  To run the project, create a .env file in the root. There is a .env.example file to show the variables you need to set.
 Run the Mp4BackendApplication.java from your IDE. The API will be exposed at port 8080.
 
--  This application can also be run with Docker. Install Docker. run "docker build -t <image-name> ." from the root of the project.
+-  This application can also be run with Docker. Install [Docker](https://www.docker.com/).  
+From the root of the project, run.
+```
+  docker build -t mp4-backend .
+```
+
 You can now run the application in docker under "images". Don't forget to set the enviroment variables, you can find what is necessary in the .env.example file.
 
 ## Features
@@ -41,16 +46,17 @@ You can now run the application in docker under "images". Don't forget to set th
 
 
 ## Technologies used
-* Spring boot
-* Docker
+* Java
+* Spring Boot
 * MongoDB
-* Websocket
-* Jackson databind
+* WebSockets
+* Jackson
+* Docker
+
+## Hosting
 * Digital Ocean
 
 
 ## Known bugs
-* Game might break after first game
 * Player names are quite unrestricted, can look visually strange in frontend.
 * Players can't move the first few seconds and can move for a short time after timer ends.
-* Score is buggy at this point
