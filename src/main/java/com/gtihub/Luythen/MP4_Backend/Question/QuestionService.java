@@ -75,23 +75,22 @@ public class QuestionService {
 
     public void addPlayerAnswer (PlayerAnswer playerAnswer) {
         synchronized (this) {
-            if (answers.stream().filter(a -> a.getAnswer().equals(playerAnswer.getAnswer())).toList().size() == 0) {
-                answers.removeIf(ap -> ap.getName().equals(playerAnswer.getName()));
-                answers.add(playerAnswer);
-            }
+            answers.removeIf(ap -> ap.getName().equals(playerAnswer.getName()));
+            answers.add(playerAnswer);
         }
     }
 
-    public void calculateAllPlayerPoints (Map<String, PlayerInformation> players) throws Exception {
+    public synchronized void calculateAllPlayerPoints (Map<String, PlayerInformation> players) throws Exception {
         List<PlayerAnswer> correctPlayerAnswers = answers.stream().filter(a -> currentQuestion.getCorrectAnswer().equals(a.getAnswer())).collect(Collectors.toList());
+        PlayerAnswer fastestAnswer = null;
+
+        if (!correctPlayerAnswers.isEmpty()) fastestAnswer = correctPlayerAnswers.stream().min(Comparator.comparing(PlayerAnswer::getTime)).orElseThrow();
 
         for (PlayerAnswer playerAnswer : answers) {
             PlayerInformation playerInformation = players.get(playerAnswer.getName());
             int score = playerInformation.getScore();
 
-            if (!correctPlayerAnswers.isEmpty() && correctPlayerAnswers.contains(playerAnswer)) {
-                PlayerAnswer fastestAnswer = correctPlayerAnswers.stream().min(Comparator.comparing(PlayerAnswer::getTime)).orElseThrow();
-                
+            if (correctPlayerAnswers.stream().anyMatch(p -> p.getName().equals(playerAnswer.getName()))) {
                 playerInformation.setScore(score + (fastestAnswer.getName().equals(playerAnswer.getName()) ? 2 : 1));
             } else {
                 playerInformation.setScore(score - (!playerAnswer.getAnswer().equals("blank") ? 1 : 2));
