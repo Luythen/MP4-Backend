@@ -94,7 +94,6 @@ public class GameService {
             } else {
                 gameSessionRemaining = Integer.parseInt(rounds);
             }
-            gameSessionRemaining = Integer.parseInt(environment.getProperty("game.rounds"));
             messageingTemplate.convertAndSend("/topic/scoreboard", gameHandler.gameComplete());
             messageingTemplate.convertAndSend("/topic/lobby", gameHandler.getPlayers());
         }

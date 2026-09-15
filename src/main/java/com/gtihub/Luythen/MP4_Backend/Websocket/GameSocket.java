@@ -61,6 +61,10 @@ public class GameSocket {
     public void startGame () {
         if (!gameService.isGameOn() && !gameService.isGameFinished() && gameService.getPlayers().size() > 0) {
             gameService.startTime();
+            for (PlayerInformation playerInformation : gameService.getPlayers().values()) {
+                playerInformation.setPosX(500);
+                playerInformation.setPosY(350);
+            }
             messagingTemplate.convertAndSend("/topic/move", gameService.getPlayers());
         } 
     }
