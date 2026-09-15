@@ -24,6 +24,7 @@ public class GameService {
     private int gameSessionRemaining;
     
     private boolean gameOn;
+    private boolean gameFinshid = false;
     private final int seconds = 15;
     private final QuestionService questionService;
 
@@ -85,6 +86,7 @@ public class GameService {
         }
         if (gameSessionRemaining > 0) {
             gameSessionRemaining -= 1;
+            gameHandler.setCurrentQuestion(questionService.getRandomQuestion());
         } else {
             String rounds = environment.getProperty("game.rounds");
             if (rounds == null) {
@@ -92,10 +94,10 @@ public class GameService {
             } else {
                 gameSessionRemaining = Integer.parseInt(rounds);
             }
-            gameHandler.gameComplete();
+            gameSessionRemaining = Integer.parseInt(environment.getProperty("game.rounds"));
+            messageingTemplate.convertAndSend("/topic/scoreboard", gameHandler.gameComplete());
             messageingTemplate.convertAndSend("/topic/lobby", gameHandler.getPlayers());
         }
-        gameHandler.setCurrentQuestion(questionService.getRandomQuestion());
     }
 
     public long gameTimer() {
@@ -109,6 +111,9 @@ public class GameService {
 
     public boolean isGameOn() {
         return gameOn;
+    }
+    public boolean isGameFinished() {
+        return gameFinshid;
     }
 
     public int addPoint(String name, int points) {

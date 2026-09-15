@@ -76,9 +76,12 @@ public class GameHandler {
         this.currentQuestion = currentQuestion;
     }
 
-    public void gameComplete() {
+    public Map<String, PlayerInformation> gameComplete() {
+        Map<String, PlayerInformation> gameCompletedInfo = players;
         sessiontoName = new HashMap<>();
         players = new HashMap();
+
+        return gameCompletedInfo;
     }
 
 }
