@@ -46,7 +46,7 @@ public class GameSocket {
     @MessageMapping("/move")
     // public PlayerModel movePlayer (@Payload String keypressed)
     public void movePlayer (@Payload String keypressed, SimpMessageHeaderAccessor headerAccessor) {
-        if (gameService.getPlayers().size() > 0) {
+        if (gameService.getPlayers().size() > 0 && gameService.isGameOn()) {
             String sessionId = headerAccessor.getSessionId();
             String name = gameService.getPlayerBySessionId(sessionId);
             messagingTemplate.convertAndSend("/topic/move", gameService.movePlayer(keypressed, name));
