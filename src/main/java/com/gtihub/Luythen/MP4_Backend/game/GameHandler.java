@@ -25,8 +25,8 @@ public class GameHandler {
         PlayerInformation playerInformation = new PlayerInformation();
         playerInformation.setColor("White");
         playerInformation.setScore(0);
-        playerInformation.setPosX(50);
-        playerInformation.setPosY(50);
+        playerInformation.setPosX(500);
+        playerInformation.setPosY(350);
 
         players.put(name, playerInformation);
         sessiontoName.put(sessionId, name);
