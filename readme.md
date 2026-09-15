@@ -45,6 +45,7 @@ You can now run the application in docker under "images". Don't forget to set th
 * MongoDB
 * Websocket
 * Jackson databind
+* Digital Ocean
 
 
 
