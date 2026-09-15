@@ -88,6 +88,12 @@ public class GameService {
             gameSessionRemaining -= 1;
             gameHandler.setCurrentQuestion(questionService.getRandomQuestion());
         } else {
+            String rounds = environment.getProperty("game.rounds");
+            if (rounds == null) {
+                gameSessionRemaining = 5;
+            } else {
+                gameSessionRemaining = Integer.parseInt(rounds);
+            }
             gameSessionRemaining = Integer.parseInt(environment.getProperty("game.rounds"));
             messageingTemplate.convertAndSend("/topic/scoreboard", gameHandler.gameComplete());
             messageingTemplate.convertAndSend("/topic/lobby", gameHandler.getPlayers());
