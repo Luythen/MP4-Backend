@@ -47,7 +47,7 @@ public class GameSocket {
         if (gameService.getPlayers().size() > 0 && gameService.isGameOn()) {
             String sessionId = headerAccessor.getSessionId();
             String name = gameService.getPlayerBySessionId(sessionId);
-            messagingTemplate.convertAndSend("/topic/move", gameService.movePlayer(keypressed, name));
+            if (name != null) messagingTemplate.convertAndSend("/topic/move", gameService.movePlayer(keypressed, name));
         }
     }
 
