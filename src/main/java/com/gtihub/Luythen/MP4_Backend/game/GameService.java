@@ -5,7 +5,6 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -25,7 +24,6 @@ public class GameService {
     
     private boolean gameOn;
     private boolean gameFinshid = false;
-    private final int seconds = 15;
     private final QuestionService questionService;
 
     private final GameHandler gameHandler = new GameHandler();
@@ -43,7 +41,7 @@ public class GameService {
         try {
             return gameHandler.addPlayer(name, sessionId);
         } catch (Exception e) {
-            return new HashMap();
+            return new HashMap<>();
         }
     }
 

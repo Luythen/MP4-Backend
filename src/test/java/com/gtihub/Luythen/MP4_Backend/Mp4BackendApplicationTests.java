@@ -93,7 +93,7 @@ class Mp4BackendApplicationTests {
 		gameHandler.movePlayer("ArrowRight", "Pedro Pascal");
 
 		Map<String, PlayerInformation> players = gameHandler.getPlayers();
-		assertEquals(35, players.get("Matt Smith").getPosY());
-		assertEquals(65, players.get("Pedro Pascal").getPosX());
+		assertEquals(335, players.get("Matt Smith").getPosY());
+		assertEquals(515, players.get("Pedro Pascal").getPosX());
 	}
 }

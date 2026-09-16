@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Random;
@@ -26,7 +25,6 @@ public class QuestionService {
     private final MongoOperations mongoOperations;
     private final long questionCount;
     private QuestionModel currentQuestion;
-    private boolean fastestAnswered;
 
     private List<PlayerAnswer> answers = new ArrayList<>();
 
@@ -67,9 +65,6 @@ public class QuestionService {
     public QuestionModel getRandomQuestion() {
         long randomQuestion = random.nextLong(questionCount) + 1;
         currentQuestion = mongoOperations.findById(randomQuestion, QuestionModel.class);
-
-          // Ny fråga = ingen har svarat snabbast ännu
-        fastestAnswered = false;
         return currentQuestion;
     }
 
@@ -99,26 +94,4 @@ public class QuestionService {
         
         answers.clear();
     }
-
-    /**
-    public int calculatePoints(String answer) {
-        // Ingen svarade
-        if (answer == null || answer.isBlank()) {
-            return -2;
-        }
-
-        // När en spelare svarar fel
-        if (!currentQuestion.getCorrectAnswer().equals(answer)) {
-            return -1;
-        }
-
-        // När en spelare svarar rätt och först
-        if (!fastestAnswered) {
-            fastestAnswered = true;
-            return 2;
-        }
-        return 1; // När en spelare svarar rätt men inte först
-
-    }
-     */
 }
