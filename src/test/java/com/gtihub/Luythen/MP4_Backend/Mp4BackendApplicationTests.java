@@ -6,18 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import com.gtihub.Luythen.MP4_Backend.Player.PlayerInformation;
