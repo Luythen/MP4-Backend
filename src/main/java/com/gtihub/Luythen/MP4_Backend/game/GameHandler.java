@@ -9,10 +9,9 @@ import com.gtihub.Luythen.MP4_Backend.Question.QuestionModel;
 public class GameHandler {
 
     private QuestionModel currentQuestion;
-    private QuestionModel formerQuestion;
 
-    private Map<String, String> sessiontoName = new HashMap();
-    private Map<String, PlayerInformation> players = new HashMap();
+    private Map<String, String> sessiontoName = new HashMap<>();
+    private Map<String, PlayerInformation> players = new HashMap<>();
 
     private final float speed = 15;
 
@@ -79,7 +78,7 @@ public class GameHandler {
     public Map<String, PlayerInformation> gameComplete() {
         Map<String, PlayerInformation> gameCompletedInfo = players;
         sessiontoName = new HashMap<>();
-        players = new HashMap();
+        players = new HashMap<>();
 
         return gameCompletedInfo;
     }
